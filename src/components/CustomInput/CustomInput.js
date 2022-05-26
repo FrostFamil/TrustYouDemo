@@ -4,7 +4,7 @@ import getStyles from './CustomInput.styled';
 
 let animationEnd = true;
 
-const CustomInput = ({...props}) => {
+const CustomInput = ({buttonPressed, ...props}) => {
   const style = getStyles();
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
@@ -39,7 +39,7 @@ const CustomInput = ({...props}) => {
             editable={true}
             {...props}
           />
-          <Button title="Send" />
+          <Button title="Send" onPress={buttonPressed} />
         </View>
       </View>
       <View style={{height: keyboardHeight}} />

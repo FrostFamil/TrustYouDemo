@@ -11,6 +11,7 @@ import {
 import styles from './Chat.styled';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomInput from '../../components/CustomInput/CustomInput';
+import {sendMessage} from '../../utils/chatService';
 
 const data = [
   {type: 'message', author: 'Famil', body: 'test'},
@@ -22,6 +23,7 @@ const Chat = () => {
   const [username, setUserName] = useState('Famil');
   const [newMessage, setNewMessage] = useState('');
   const [isUserNameExist, setIsUsernameExist] = useState(false);
+  const [allMessages, setAllMessage] = useState([]);
   const flatListRef = useRef(null);
 
   useEffect(() => {
@@ -52,15 +54,15 @@ const Chat = () => {
             }}
             ref={flatListRef}
             contentContainerStyle={style.chatRoomFlatList}
-            data={data}
+            data={allMessages}
             keyExtractor={(item, index) => index}
             renderItem={({item, index}) => {
               return (
                 <View>
                   <ChatBubble
                     key={index}
-                    message={item.body}
-                    belongToAuthor={item.author === username}
+                    message={item}
+                    belongToAuthor={item.includes(username)}
                     user={item.author}
                   />
                 </View>
@@ -68,7 +70,18 @@ const Chat = () => {
             }}
           />
           <SafeAreaView style={style.chatRoomSafeAreaView}>
-            <CustomInput value={newMessage} onChangeText={setNewMessage} />
+            <CustomInput
+              value={newMessage}
+              onChangeText={setNewMessage}
+              buttonPressed={() => {
+                setNewMessage('');
+                sendMessage({ws: global.ws, message: newMessage});
+
+                global.ws.onmessage = e => {
+                  setAllMessage([...allMessages, e.data]);
+                };
+              }}
+            />
           </SafeAreaView>
         </View>
       ) : (

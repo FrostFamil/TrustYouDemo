@@ -5,16 +5,17 @@ import moment from 'moment';
 import styles from './Details.styled';
 
 const Details = ({route}) => {
-  const {filter_type, filter_value} = route.params;
   const style = styles();
   const [review, setReviews] = useState([]);
 
   useEffect(() => {
-    analyticsApi.getReview({filter_type, filter_value}).then(res => {
-      console.log(res.data.data);
-      setReviews(res.data.data);
-    });
-  }, [filter_type, filter_value]);
+    if (route.params) {
+      const {filter_type, filter_value} = route.params;
+      analyticsApi.getReview({filter_type, filter_value}).then(res => {
+        setReviews(res.data.data);
+      });
+    }
+  }, [route.params]);
 
   return (
     <View style={style.container}>

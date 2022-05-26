@@ -21,7 +21,6 @@ const getReview = async ({
     return err;
   });
 
-  console.log(url);
   return data;
 };
 

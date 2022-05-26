@@ -11,12 +11,7 @@ import {
 import styles from './Chat.styled';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import {sendMessage} from '../../utils/chatService';
-
-const data = [
-  {type: 'message', author: 'Famil', body: 'test'},
-  {type: 'message', author: 'Arif', body: 'test'},
-];
+import {initChatSocket, sendMessage} from '../../utils/chatService';
 
 const Chat = () => {
   const style = styles({belongToAuthor: false});
@@ -31,6 +26,7 @@ const Chat = () => {
       const value = await AsyncStorage.getItem('username');
       if (value) {
         setIsUsernameExist(true);
+        setUserName(value);
       }
     }
     fetchData();
@@ -40,6 +36,7 @@ const Chat = () => {
     await AsyncStorage.setItem('username', username);
     setUserName('Famil');
     setIsUsernameExist(true);
+    global.ws = initChatSocket({username: 'Famil'});
   }
 
   return (
